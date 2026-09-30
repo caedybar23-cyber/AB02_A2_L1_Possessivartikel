@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Possessivartikel A2 - Übungsblatt</title>
+<style>
+body{
+ font-family:Aptos, Arial, sans-serif;
+ background:linear-gradient(135deg,#eef7ff,#fff7e8);
+ margin:0;padding:30px;color:#333;
+}
+.container{
+ max-width:900px;margin:auto;background:white;border-radius:24px;
+ padding:30px;box-shadow:0 10px 30px #0002;
+}
+h1{text-align:center;color:#2563eb;}
+.subtitle{text-align:center;font-size:18px}
+.card{
+ margin:25px 0;padding:20px;border-radius:18px;
+ background:#f8fafc;border-left:8px solid #60a5fa;
+}
+.card:nth-child(4){border-color:#34d399}
+.card:nth-child(5){border-color:#fbbf24}
+.card:nth-child(6){border-color:#fb923c}
+.question{
+ margin:12px 0;padding:10px;background:white;border-radius:12px;
+}
+input{
+ width:70px;border:none;border-bottom:2px solid #999;background:#fff;text-align:center;
+ font-size:16px;text-align:center;
+}
+button{
+ background:#2563eb;color:white;border:0;padding:14px 28px;
+ border-radius:30px;font-size:18px;cursor:pointer;
+ display:block;margin:25px auto;
+}
+button:hover{transform:scale(1.05)}
+#result{text-align:center;font-size:22px;font-weight:bold}
+#firework{display:none;text-align:center;font-size:60px;animation:boom 1s infinite}
+@keyframes boom{
+ 50%{transform:scale(1.3)}
+}
+.correct{background:#dcfce7}
+.wrong{background:#fee2e2}
+.answer-show{
+ color:#166534;
+ font-weight:800;
+ margin-left:8px;
+}
+.redo-btn{
+ background:#f59e0b;
+ color:white;
+}
+
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Possessivartikel A2</h1>
+<p class="subtitle">✏️ Setze den richtigen Possessivartikel ein!</p>
+
+
+
+<div id="exercise"></div>
+
+<button onclick="check()">✅ Antworten prüfen</button><button class="redo-btn" onclick="resetAll()">🔄 Noch einmal machen</button>
+<div id="alt" style="margin-top:15px;text-align:center;font-size:14px;color:#64748b;">Alternative Schreibweise: ä = ae · ü = ue · ö = oe · ß = ss</div><div id="result"></div>
+<div id="firework">🎉🎆🎉<br><button onclick="alert('Gut gemacht! 🌟')">Gut gemacht!</button></div>
+</div>
+
+<script>
+const data=[
+["🟦 Aufgabe 1 – Nominativ",[
+["Das ist nicht das Handy, das ich suche. ___ Handy ist weiß.","mein"],
+["Zelik macht tolle Partys. ___ Partys sind berühmt.","seine"],
+["Schau die Noten von Nathalie an! ___ Noten werden besser.","ihre"],
+["Nina und Walter: ___ Eltern heißen Thomas und Maria.","ihre"],
+["Wir haben ein Haus gekauft. ___ neues Haus liegt direkt am Stadtrand.","unser"]
+]],
+["🟩 Aufgabe 2 – Akkusativ",[
+["Das ist mein Laptop! Nehmen Sie bitte ___ Laptop.","Ihren"],
+["Sie haben ___ Prüfung korrigiert.","meine"],
+["Gib mir bitte ___ Hefte, Kinder!","eure"],
+["Nehmen Sie regelmäßig ___ Pillen.","Ihre"],
+["Ich kaufe ___ Schokoladencreme und meine Kekse.","meine"]
+]],
+["🟨 Aufgabe 3 – Dativ",[
+["Ich danke ___ Lehrer für die Hilfe.","meinem"],
+["Wir gratulieren ___ Freundin zum Geburtstag.","unserer"],
+["Ich spreche mit ___ Nachbarn über das Problem.","meinem"],
+["Wir fahren morgen zu ___ Großeltern.","unseren"],
+["Sie hilft ___ Mutter in der Küche.","ihrer"]
+]],
+["🟧 Aufgabe 4 – Gemischte Übung (Nominativ, Akkusativ oder Dativ?)",[
+["Marta hat eine sehr nette Schwester. ___ Schwester hilft mir bei den Hausaufgaben.","ihre"],
+["Guten Tag, ich will bitte ___ Schwester für einen Sprachkurs anmelden.","meine"],
+["Kommen Sie bitte mit ___ Dokumenten vorbei.","Ihren"],
+["Wenn Sie ___ neues Auto anmelden möchten, kommen Sie vorbei.","Ihr"],
+["Ich bin seit Tagen wegen des Virus zuhause und wünsche mir ___ Freiraum zurück.","meinen"]
+]]
+];
+
+let box=document.getElementById("exercise");
+let id=0;
+data.forEach((s)=>{
+ let d=document.createElement("div");
+ d.className="card";
+ d.innerHTML="<h2>"+s[0]+"</h2>";
+ s[1].forEach(q=>{
+  if(false){
+   let parts=q[0].split("|");
+   d.innerHTML += `<div class="question example-filled">${parts[1]}<span class="example-answer">${parts[2]}</span>${parts[3]}</div>`;
+  } else {
+   id++;
+   let text=q[0].replace("___", '<input id="a'+id+'" class="inline-answer">');
+   d.innerHTML += `<div class="question">${id}. ${text}</div>`;
+  }
+ });
+ box.appendChild(d);
+});
+
+function check(){
+ let n=0,total=0;
+ document.querySelectorAll("input").forEach((x,i)=>{
+   total++;
+   let ans="";
+   let count=0;
+   data.forEach(s=>s[1].forEach(q=>{if(q[1]!==""){count++;if(count==i+1)ans=q[1]}}));
+   if(x.value.trim().toLowerCase()==ans.toLowerCase()){
+    x.className="correct";n++;
+   }else{
+    x.className="wrong";
+    x.insertAdjacentHTML('afterend','<span class="answer-show">→ '+ans+'</span>');
+   }
+ });
+ document.getElementById("result").innerHTML="Du hast "+n+" / "+total+" richtig! 🎯";
+ document.getElementById("firework").style.display="block";
+}
+function resetAll(){
+ document.querySelectorAll("input").forEach(x=>{
+   x.value="";
+   x.className="";
+ });
+ document.querySelectorAll(".answer-show").forEach(x=>x.remove());
+ document.getElementById("result").innerHTML="";
+ document.getElementById("firework").style.display="none";
+}
+</script>
+
+</body>
+</html>
+<style>.inline-answer{display:inline-block;vertical-align:middle;font-size:18px;font-weight:600;padding:2px 4px;}</style>
